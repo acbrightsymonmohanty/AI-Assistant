@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voice Assistant</title>
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Oriya&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">Voice Assistant</div>
+            <button class="settings-btn"><i class="fas fa-ellipsis"></i></button>
+        </header>
+
+        <div class="settings-menu" id="settingsMenu">
+            <div class="menu-header">
+                <h2>Menu</h2>
+                <div class="menu-close">×</div>
+            </div>
+            <div class="menu-items">
+                <div class="menu-item" id="newChatMenuItem">
+                    <i class="fas fa-plus"></i>
+                    <span>New Chat</span>
+                </div>
+                <div class="menu-divider"></div>
+                <div class="menu-item" id="loginMenuItem">
+                    <i class="fas fa-sign-in-alt"></i>
+                    <span>Login</span>
+                </div>
+                <div class="menu-item" id="historyMenuItem">
+                    <i class="fas fa-history"></i>
+                    <span>History</span>
+                </div>
+                <div class="menu-item" id="settingsMenuItem">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </div>
+            </div>
+        </div>
+
+        <main class="chat-container">
+            <div class="welcome-section">
+                <div class="welcome-text" data-translate="welcome">What can I help with?</div>
+            </div>
+            
+            <div class="options">
+                <button class="option-btn" data-action="create-image">
+                    <i class="fas fa-image"></i>
+                    <span data-translate="createImage">Create image</span>
+                </button>
+                <button class="option-btn" data-action="get-advice">
+                    <i class="fas fa-lightbulb"></i>
+                    Get advice
+                </button>
+                <button class="option-btn" data-action="brainstorm">
+                    <i class="fas fa-brain"></i>
+                    Brainstorm
+                </button>
+                <button class="option-btn" data-action="code">
+                    <i class="fas fa-code"></i>
+                    Code
+                </button>
+                <button class="option-btn" data-action="erp-query">
+                    <i class="fas fa-chart-line"></i>
+                    <span data-translate="erpQuery">ERP Query</span>
+                </button>
+            </div>
+
+            <div class="chat-messages" id="chatMessages">
+                <!-- Messages will appear here -->
+            </div>
+        </main>
+
+        <footer>
+            <div class="input-container">
+                <button id="micButton" class="mic-btn">
+                    <i class="fas fa-microphone"></i>
+                </button>
+                <input type="text" id="userInput" placeholder="Message VoiceGPT">
+                <button id="sendButton" class="send-btn">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+            <div class="bottom-buttons">
+                <button class="bottom-btn">
+                    <i class="fas fa-search"></i>
+                    Search
+                </button>
+                <button class="bottom-btn">
+                    <i class="fas fa-arrows-rotate"></i>
+                    Reason
+                </button>
+            </div>
+        </footer>
+    </div>
+
+    <div class="modal" id="loginModal">
+        <div class="modal-content">
+            <div class="modal-close" onclick="closeModal('loginModal')">×</div>
+            <h2>Welcome Back</h2>
+            <p class="modal-subtitle">Please login to your account</p>
+            <form class="auth-form" id="loginForm">
+                <div class="form-group">
+                    <label for="loginEmail">Email</label>
+                    <input type="email" id="loginEmail" required>
+                </div>
+                <div class="form-group">
+                    <label for="loginPassword">Password</label>
+                    <input type="password" id="loginPassword" required>
+                </div>
+                <button type="submit" class="auth-btn">Login</button>
+            </form>
+            <div class="auth-switch">
+                Don't have an account? <a href="#" id="showRegister">Register</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="registerModal">
+        <div class="modal-content">
+            <div class="modal-close" onclick="closeModal('registerModal')">×</div>
+            <h2>Create Account</h2>
+            <p class="modal-subtitle">Join us today!</p>
+            <form class="auth-form" id="registerForm">
+                <div class="form-group">
+                    <label for="registerName">Full Name</label>
+                    <input type="text" id="registerName" required>
+                </div>
+                <div class="form-group">
+                    <label for="registerEmail">Email</label>
+                    <input type="email" id="registerEmail" required>
+                </div>
+                <div class="form-group">
+                    <label for="registerPassword">Password</label>
+                    <input type="password" id="registerPassword" required>
+                </div>
+                <div class="form-group">
+                    <label for="confirmPassword">Confirm Password</label>
+                    <input type="password" id="confirmPassword" required>
+                </div>
+                <button type="submit" class="auth-btn">Create Account</button>
+            </form>
+            <div class="auth-switch">
+                Already have an account? <a href="#" id="showLogin">Login</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="settingsModal">
+        <div class="modal-content settings-modal">
+            <div class="modal-header">
+                <h2>Settings</h2>
+                <div class="modal-close" onclick="closeModal('settingsModal')">×</div>
+            </div>
+            
+            <div class="settings-container">
+                <div class="settings-section">
+                    <div class="section-header">
+                        <i class="fas fa-palette"></i>
+                        <h3>Appearance</h3>
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-label">
+                            <span>Dark Mode</span>
+                            <small>Switch between light and dark themes</small>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="darkModeToggle">
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="settings-section">
+                    <div class="section-header">
+                        <i class="fas fa-globe"></i>
+                        <h3>Language</h3>
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-label">
+                            <span>Select Language</span>
+                            <small>Choose your preferred language</small>
+                        </div>
+                        <select id="languageSelect" class="settings-select">
+                            <option value="en">English</option>
+                            <option value="hi">हिंदी (Hindi)</option>
+                            <option value="bn">বাংলা (Bengali)</option>
+                            <option value="or">ଓଡ଼ିଆ (Odia)</option>
+                            <option value="ur">اردو (Urdu)</option>
+                            <option value="kn">ಕನ್ನಡ (Kannada)</option>
+                            <option value="te">తెలుగు (Telugu)</option>
+                            <option value="ta">தமிழ் (Tamil)</option>
+                            <option value="ml">മലയാളം (Malayalam)</option>
+                            <option value="gu">ગુજરાતી (Gujarati)</option>
+                            <option value="mr">मराठी (Marathi)</option>
+                            <option value="pa">ਪੰਜਾਬੀ (Punjabi)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="settings-section">
+                    <div class="section-header">
+                        <i class="fas fa-microphone"></i>
+                        <h3>Voice Assistant</h3>
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-label">
+                            <span>Enable Voice</span>
+                            <small>Turn voice responses on/off</small>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="voiceToggle">
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-label">
+                            <span>Response Speed</span>
+                            <small>Adjust the speaking rate</small>
+                        </div>
+                        <div class="speed-control">
+                            <i class="fas fa-volume-down"></i>
+                            <input type="range" id="speedRange" min="0.5" max="2" step="0.1" value="1">
+                            <i class="fas fa-volume-up"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="settings-section">
+                    <div class="section-header">
+                        <i class="fas fa-puzzle-piece"></i>
+                        <h3>AI Modules</h3>
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-label">
+                            <span>Select Module</span>
+                            <small>Choose your preferred AI module</small>
+                        </div>
+                        <select id="moduleSelect" class="settings-select">
+                            <option value="gemini">Gemini AI</option>
+                            <option value="erp">ERP Assistant</option>
+                            <option value="openai">OpenAI GPT</option>
+                        </select>
+                    </div>
+                    
+                    <!-- ERP Settings (shown when ERP is selected) -->
+                    <div id="erpSettings" class="module-settings" style="display: none;">
+                        <div class="setting-item">
+                            <div class="setting-label">
+                                <span>Database</span>
+                                <small>Select ERP database</small>
+                            </div>
+                            <select id="erpDatabase" class="settings-select">
+                                <option value="ERPCommonDB">ERP Common DB</option>
+                                <option value="ERPInventoryDB">ERP Inventory DB</option>
+                            </select>
+                        </div>
+                        <div class="setting-item">
+                            <div class="setting-label">
+                                <span>Version</span>
+                                <small>Select ERP version</small>
+                            </div>
+                            <select id="erpVersion" class="settings-select">
+                                <option value="Gemini">Gemini</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="settings-footer">
+                <button class="settings-btn secondary" onclick="document.getElementById('settingsModal').style.display='none'">Cancel</button>
+                <button class="settings-btn primary" id="saveSettingsBtn">Save Changes</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="historyModal">
+        <div class="modal-content history-modal">
+            <div class="modal-header">
+                <h2><i class="fas fa-history"></i> Chat History</h2>
+                <div class="modal-close" onclick="closeModal('historyModal')">×</div>
+            </div>
+            
+            <div class="history-container">
+                <div class="history-sidebar">
+                    <div class="history-search">
+                        <i class="fas fa-search"></i>
+                        <input type="text" placeholder="Search conversations..." id="historySearch">
+                    </div>
+                    <div id="historyList" class="history-list">
+                        <!-- History items will be added here -->
+                    </div>
+                </div>
+                
+                <div class="history-content">
+                    <div id="selectedChatContent" class="selected-chat">
+                        <!-- Selected chat content will be shown here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add this template for the action buttons -->
+    <template id="messageActions">
+        <div class="message-actions">
+            <button class="action-btn copy-btn" title="Copy to clipboard">
+                <i class="fas fa-copy"></i>
+            </button>
+            <button class="action-btn share-btn" title="Share">
+                <i class="fas fa-share-alt"></i>
+            </button>
+        </div>
+    </template>
+
+    <script src="script.js"></script>
+</body>
+</html> 
